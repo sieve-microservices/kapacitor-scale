@@ -1,7 +1,7 @@
 package scaling
 
 import (
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/rancher"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/rancher"
 	"fmt"
 	"sync"
 	"time"

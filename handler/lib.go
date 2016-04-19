@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/scaling"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/scaling"
 	"errors"
 	"fmt"
 	"github.com/influxdata/kapacitor/udf"

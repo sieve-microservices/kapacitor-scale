@@ -1,3 +1,7 @@
+## Tests
+
+$ go test ./handler
+
 ## TODO
 
 - start cooldown timer, when service was actually scaled up

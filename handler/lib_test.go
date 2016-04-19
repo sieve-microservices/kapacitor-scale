@@ -1,9 +1,9 @@
 package handler_test
 
 import (
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/handler"
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/rancher"
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/scaling"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/handler"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/rancher"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/scaling"
 	"bufio"
 	"flag"
 	"fmt"
@@ -188,6 +188,8 @@ func TestHandler(t *testing.T) {
 		t.Fatalf("expected scale to be 2, got %d", val)
 	}
 	server.writePoint(udfPoint)
-	go t.Fatalf("it should not scale up because of cooldown, got '%v'", server.ReadResponse())
+	go func() {
+		t.Fatalf("it should not scale up because of cooldown, got '%v'", server.ReadResponse())
+	}()
 	time.Sleep(time.Millisecond * 10) // no response, good!
 }

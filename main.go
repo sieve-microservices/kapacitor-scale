@@ -9,14 +9,14 @@ import (
 	"os"
 	"syscall"
 
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/handler"
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/rancher"
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scaling/scaling"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/handler"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/rancher"
+	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/scaling"
 	"github.com/influxdata/kapacitor/udf/agent"
 )
 
 var (
-	socketPath = flag.String("socket", "/tmp/kapacitor-scaling.sock", "Where to create the unix socket")
+	socketPath = flag.String("socket", "/tmp/kapacitor-scale.sock", "Where to create the unix socket")
 )
 
 type acceptor struct {
