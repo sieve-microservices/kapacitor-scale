@@ -47,7 +47,7 @@ func (acc *acceptor) Accept(conn net.Conn) {
 func parseArgs() *url.URL {
 	flag.Parse()
 	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "USAGE: %s rancherurl\n")
+		fmt.Fprintf(os.Stderr, "USAGE: %s rancherurl\n", os.Args[0])
 		fmt.Fprintf(os.Stderr, "rancher url is expected as first argument, for example: http://accesskey:secretkey@localhost:8080")
 		os.Exit(1)
 	}

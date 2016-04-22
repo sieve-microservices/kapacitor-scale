@@ -152,7 +152,7 @@ func (h *Handler) evaluateWhen(p *udf.Point) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("the expression `when` should evaluate to true or false, got %s", res)
 	}
-	h.debug("evaluate '%s' for '%v' -> should scale: %s", h.When, fields, doScale)
+	h.debug("evaluate '%s' for '%v' -> should scale: %v", h.When, fields, doScale)
 	return doScale, nil
 }
 
@@ -191,6 +191,9 @@ func (h *Handler) Point(p *udf.Point) error {
 	if err != nil {
 		return err
 	}
+	if to == service.CurrentInstances {
+		h.debug("skip scaling service '%s' still %d", h.Id, to)
+	}
 	h.debug("attempt to scale service '%s' from %d to %d", h.Id, service.CurrentInstances, to)
 	if !h.Simulate {
 		err = h.scaleAgent.Scale(h.Id, to)
@@ -200,9 +203,9 @@ func (h *Handler) Point(p *udf.Point) error {
 	}
 	service.CurrentInstances = to
 	service.CooldownUntil = time.Now().Add(h.Cooldown)
-	p.FieldsDouble = nil
+	p.FieldsDouble = make(map[string]float64)
 	p.FieldsInt = map[string]int64{"scale": to}
-	p.FieldsString = nil
+	p.FieldsString = make(map[string]string)
 	h.kapacitorAgent.Responses <- &udf.Response{
 		Message: &udf.Response_Point{
 			Point: p,
