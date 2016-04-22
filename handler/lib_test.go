@@ -123,7 +123,7 @@ func intOpt(name string, value int64) *udf.Option {
 var options = []*udf.Option{
 	strOpt("id", "abc"),
 	strOpt("when", "cpu_usage > 8"),
-	strOpt("scale", "current + 1"),
+	strOpt("by", "current + 2"),
 	intOpt("min_instances", 1),
 	intOpt("max_instances", 10),
 	strOpt("cooldown", "1m"),
@@ -184,8 +184,8 @@ func TestHandler(t *testing.T) {
 		t.Fatalf("expect to receive a point")
 	}
 	val := point.Point.GetFieldsInt()["scale"]
-	if val != 2 {
-		t.Fatalf("expected scale to be 2, got %d", val)
+	if val != 3 {
+		t.Fatalf("expected scale to be 3, got %d", val)
 	}
 	server.writePoint(udfPoint)
 	go func() {

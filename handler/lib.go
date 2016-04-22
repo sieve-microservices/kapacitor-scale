@@ -13,7 +13,7 @@ import (
 )
 
 type Handler struct {
-	Id, When, Scale string
+	Id, When, By    string
 	MinInstances    int64
 	MaxInstances    int64
 	Cooldown        time.Duration
@@ -37,11 +37,12 @@ func (*Handler) Info() (*udf.InfoResponse, error) {
 		Options: map[string]*udf.OptionInfo{
 			"id":            {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
 			"when":          {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
-			"scale":         {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
+			"by":            {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
 			"min_instances": {ValueTypes: []udf.ValueType{udf.ValueType_INT}},
 			"max_instances": {ValueTypes: []udf.ValueType{udf.ValueType_INT}},
 			"cooldown":      {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
 			"simulate":      {ValueTypes: []udf.ValueType{udf.ValueType_BOOL}},
+			"debug":         {ValueTypes: []udf.ValueType{udf.ValueType_BOOL}},
 		},
 	}
 	return info, nil
@@ -59,7 +60,7 @@ func (h *Handler) Init(r *udf.InitRequest) (*udf.InitResponse, error) {
 	h.Debug = false
 	h.Simulate = false
 	h.Cooldown = time.Minute
-	h.Scale = "current + 1"
+	h.By = "current + 1"
 	h.MinInstances = 1
 	h.MaxInstances = 3
 
@@ -68,8 +69,8 @@ func (h *Handler) Init(r *udf.InitRequest) (*udf.InitResponse, error) {
 		switch opt.Name {
 		case "when":
 			h.When = opt.Values[0].Value.(*udf.OptionValue_StringValue).StringValue
-		case "scale":
-			h.Scale = opt.Values[0].Value.(*udf.OptionValue_StringValue).StringValue
+		case "by":
+			h.By = opt.Values[0].Value.(*udf.OptionValue_StringValue).StringValue
 		case "min_instances":
 			h.MinInstances = opt.Values[0].Value.(*udf.OptionValue_IntValue).IntValue
 		case "max_instances":
@@ -89,9 +90,9 @@ func (h *Handler) Init(r *udf.InitRequest) (*udf.InitResponse, error) {
 		init.Success = false
 		init.Error += " must supply `when` expression;"
 	}
-	if h.Scale == "" {
+	if h.By == "" {
 		init.Success = false
-		init.Error += " must supply `scale` expression;"
+		init.Error += " must supply `by` expression;"
 	}
 	if h.MinInstances < 0 {
 		init.Success = false
@@ -155,10 +156,10 @@ func (h *Handler) evaluateWhen(p *udf.Point) (bool, error) {
 	return doScale, nil
 }
 
-func (h *Handler) evaluateScale(s *scaling.Service) (int64, error) {
+func (h *Handler) evaluateBy(s *scaling.Service) (int64, error) {
 	scaleContext := make(map[string]interface{})
 	scaleContext["current"] = s.CurrentInstances
-	res := gostr.Evaluate(h.Scale, scaleContext).(string)
+	res := gostr.Evaluate(h.By, scaleContext).(string)
 	amount, err := strconv.ParseInt(res, 10, 64)
 	if err != nil {
 		return -1, fmt.Errorf("the expression `scale` should evaluate to an integer value, got %s (tipp: there is an ROUND() method)", res)
@@ -186,7 +187,7 @@ func (h *Handler) Point(p *udf.Point) error {
 		return nil
 	}
 	defer service.Unlock()
-	to, err := h.evaluateScale(service)
+	to, err := h.evaluateBy(service)
 	if err != nil {
 		return err
 	}
