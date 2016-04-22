@@ -9,9 +9,9 @@ import (
 	"os"
 	"syscall"
 
-	"git.higgsboson.tk/Mic92/kapacitor-scaling/handler"
-	"git.higgsboson.tk/Mic92/kapacitor-scaling/rancher"
-	"git.higgsboson.tk/Mic92/kapacitor-scaling/scaling"
+	"git.higgsboson.tk/Mic92/kapacitor-scale/handler"
+	"git.higgsboson.tk/Mic92/kapacitor-scale/rancher"
+	"git.higgsboson.tk/Mic92/kapacitor-scale/scaling"
 	"github.com/influxdata/kapacitor/udf/agent"
 )
 

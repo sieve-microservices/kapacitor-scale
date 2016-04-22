@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"git.higgsboson.tk/Mic92/kapacitor-scaling/scaling"
+	"git.higgsboson.tk/Mic92/kapacitor-scale/scaling"
 	"errors"
 	"fmt"
 	"github.com/influxdata/kapacitor/udf"
