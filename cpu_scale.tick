@@ -1,0 +1,45 @@
+var cpu_percentile = stream
+    |from()
+        .measurement('docker_cpu')
+        .where(lambda: "cont_image" =~ /sharelatex-web/ AND "cpu" == 'cpu-total')
+    |window()
+	.period(10s)
+	.every(1s)
+    |percentile('usage_percent', 95.0)
+    |log()
+
+var scale_out = cpu_percentile
+    @scale()
+        .simulate(FALSE)
+        .debug(TRUE)
+        .id('1s33') // web service
+        .when('percentile > 90')
+        .by('current + 2')
+        .min_instances(1)
+        .max_instances(6)
+        .cooldown('10s')
+
+var scale_in = cpu_percentile
+    @scale()
+        .simulate(FALSE)
+	.debug(TRUE)
+        .id('1s33') // web service
+        .when('percentile < 30')
+        .by('current - 2')
+        .min_instances(1)
+        .max_instances(6)
+        .cooldown('10s')
+
+scale_out
+    |influxDBOut()
+        .database('metrics')
+        .measurement('autoscaling')
+	.flushInterval(1d)
+	.buffer(1)
+
+scale_in
+    |influxDBOut()
+        .database('metrics')
+        .measurement('autoscaling')
+	.flushInterval(1d)
+	.buffer(1)

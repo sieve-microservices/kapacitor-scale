@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+s6-svc -t /run/s6/services/kapacitor-scale
+s6-svc -t /run/s6/services/kapacitor
+sleep 2
+set -eux
+
+kapacitor define \
+    -name cpu_scale \
+    -type stream \
+    -tick /data/cpu_scale.tick \
+    -dbrp metrics.default
+kapacitor reload cpu_scale
