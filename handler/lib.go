@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/scaling"
+	"git.higgsboson.tk/Mic92/kapacitor-scaling/scaling"
 	"errors"
 	"fmt"
 	"github.com/influxdata/kapacitor/udf"

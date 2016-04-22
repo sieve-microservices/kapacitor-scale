@@ -1,9 +1,9 @@
 package handler_test
 
 import (
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/handler"
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/rancher"
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/scaling"
+	"git.higgsboson.tk/Mic92/kapacitor-scaling/handler"
+	"git.higgsboson.tk/Mic92/kapacitor-scaling/rancher"
+	"git.higgsboson.tk/Mic92/kapacitor-scaling/scaling"
 	"bufio"
 	"flag"
 	"fmt"

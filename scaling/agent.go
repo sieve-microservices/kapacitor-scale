@@ -1,7 +1,7 @@
 package scaling
 
 import (
-	"acos.alcatel-lucent.com/scmrepos/git/micro-analytics/kapacitor-scale/rancher"
+	"git.higgsboson.tk/Mic92/kapacitor-scaling/rancher"
 	"fmt"
 	"sync"
 	"time"
