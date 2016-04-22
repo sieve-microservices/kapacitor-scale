@@ -1,15 +1,16 @@
 package handler
 
 import (
-	"git.higgsboson.tk/Mic92/kapacitor-scale/scaling"
 	"errors"
 	"fmt"
-	"github.com/influxdata/kapacitor/udf"
-	"github.com/influxdata/kapacitor/udf/agent"
-	"github.com/pk-rawat/gostr/src"
 	"log"
 	"strconv"
 	"time"
+
+	"git.higgsboson.tk/Mic92/kapacitor-scale/scaling"
+	"github.com/influxdata/kapacitor/udf"
+	"github.com/influxdata/kapacitor/udf/agent"
+	"github.com/pk-rawat/gostr/src"
 )
 
 type Handler struct {
@@ -193,6 +194,7 @@ func (h *Handler) Point(p *udf.Point) error {
 	}
 	if to == service.CurrentInstances {
 		h.debug("skip scaling service '%s' still %d", h.Id, to)
+		return nil
 	}
 	h.debug("attempt to scale service '%s' from %d to %d", h.Id, service.CurrentInstances, to)
 	if !h.Simulate {
