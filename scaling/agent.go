@@ -1,7 +1,7 @@
 package scaling
 
 import (
-	"git.higgsboson.tk/Mic92/kapacitor-scale/rancher"
+	"gitlab.com/Mic92/kapacitor-scale/rancher"
 	"fmt"
 	"sync"
 	"time"

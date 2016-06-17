@@ -1,9 +1,9 @@
 package handler_test
 
 import (
-	"git.higgsboson.tk/Mic92/kapacitor-scale/handler"
-	"git.higgsboson.tk/Mic92/kapacitor-scale/rancher"
-	"git.higgsboson.tk/Mic92/kapacitor-scale/scaling"
+	"gitlab.com/Mic92/kapacitor-scale/handler"
+	"gitlab.com/Mic92/kapacitor-scale/rancher"
+	"gitlab.com/Mic92/kapacitor-scale/scaling"
 	"bufio"
 	"flag"
 	"fmt"

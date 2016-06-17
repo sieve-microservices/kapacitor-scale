@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"git.higgsboson.tk/Mic92/kapacitor-scale/scaling"
+	"gitlab.com/Mic92/kapacitor-scale/scaling"
 	"github.com/influxdata/kapacitor/udf"
 	"github.com/influxdata/kapacitor/udf/agent"
 	"github.com/pk-rawat/gostr/src"
