@@ -4,8 +4,7 @@ s6-svc -t /run/s6/services/kapacitor
 sleep 2
 set -eux
 
-kapacitor define \
-    -name cpu_scale \
+kapacitor define cpu_scale \
     -type stream \
     -tick /data/cpu_scale.tick \
     -dbrp metrics.default
