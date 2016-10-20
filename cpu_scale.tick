@@ -1,7 +1,7 @@
 var cpu_percentile = stream
     |from()
         .measurement('docker_container_cpu')
-        .where(lambda: "cont_image" =~ /sharelatex-web/ AND "cpu" == 'cpu-total')
+        .where(lambda: "container_image" =~ /sharelatex-web/ AND "cpu" == 'cpu-total')
     |window()
         .period(10s)
         .every(1s)
