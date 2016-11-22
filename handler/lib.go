@@ -233,6 +233,7 @@ func (h *Handler) Point(p *udf.Point) error {
 	p.FieldsDouble = make(map[string]float64)
 	p.FieldsInt = map[string]int64{"scale": to}
 	p.FieldsString = make(map[string]string)
+	p.Tags = map[string]string{"service_name": h.Name, "service_id": h.Id}
 	h.kapacitorAgent.Responses <- &udf.Response{
 		Message: &udf.Response_Point{
 			Point: p,
