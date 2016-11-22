@@ -1,10 +1,11 @@
 package scaling
 
 import (
-	"gitlab.com/Mic92/kapacitor-scale/rancher"
 	"fmt"
 	"sync"
 	"time"
+
+	"gitlab.com/Mic92/kapacitor-scale/rancher"
 )
 
 type Service struct {
@@ -43,6 +44,18 @@ func (a *Agent) get(serviceId string) *Service {
 		a.serviceMap[serviceId] = &Service{Id: serviceId}
 	}
 	return a.serviceMap[serviceId]
+}
+
+type Services struct {
+	Data []Service `json:"data"`
+}
+
+func (a *Agent) GetServices() (*Services, error) {
+	var services Services
+	if err := a.client.Get("v1/services/", &services); err != nil {
+		return nil, fmt.Errorf("Failed to retrieve services: %s", err)
+	}
+	return &services, nil
 }
 
 // caller must call unlock service!

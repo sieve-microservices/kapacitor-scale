@@ -7,20 +7,20 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.com/Mic92/kapacitor-scale/scaling"
 	"github.com/influxdata/kapacitor/udf"
 	"github.com/influxdata/kapacitor/udf/agent"
-	"github.com/pk-rawat/gostr/src"
+	gostr "github.com/pk-rawat/gostr/src"
+	"gitlab.com/Mic92/kapacitor-scale/scaling"
 )
 
 type Handler struct {
-	Id, When, By    string
-	MinInstances    int64
-	MaxInstances    int64
-	Cooldown        time.Duration
-	Simulate, Debug bool
-	kapacitorAgent  *agent.Agent
-	scaleAgent      *scaling.Agent
+	Id, Name, When, By string
+	MinInstances       int64
+	MaxInstances       int64
+	Cooldown           time.Duration
+	Simulate, Debug    bool
+	kapacitorAgent     *agent.Agent
+	scaleAgent         *scaling.Agent
 }
 
 func New(kapacitorAgent *agent.Agent, scaleAgent *scaling.Agent) *Handler {
@@ -37,6 +37,7 @@ func (*Handler) Info() (*udf.InfoResponse, error) {
 		Provides: udf.EdgeType_STREAM,
 		Options: map[string]*udf.OptionInfo{
 			"id":            {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
+			"name":          {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
 			"when":          {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
 			"by":            {ValueTypes: []udf.ValueType{udf.ValueType_STRING}},
 			"min_instances": {ValueTypes: []udf.ValueType{udf.ValueType_INT}},
@@ -80,11 +81,18 @@ func (h *Handler) Init(r *udf.InitRequest) (*udf.InitResponse, error) {
 			cooldown = opt.Values[0].Value.(*udf.OptionValue_StringValue).StringValue
 		case "id":
 			h.Id = opt.Values[0].Value.(*udf.OptionValue_StringValue).StringValue
+		case "name":
+			h.Name = opt.Values[0].Value.(*udf.OptionValue_StringValue).StringValue
 		case "simulate":
 			h.Simulate = opt.Values[0].Value.(*udf.OptionValue_BoolValue).BoolValue
 		case "debug":
 			h.Debug = opt.Values[0].Value.(*udf.OptionValue_BoolValue).BoolValue
 		}
+	}
+
+	if h.Id == "" && h.Name == "" {
+		init.Success = false
+		init.Error += " must supply either `id` or `name` expression;"
 	}
 
 	if h.When == "" {
@@ -175,6 +183,23 @@ func (h *Handler) evaluateBy(s *scaling.Service) (int64, error) {
 }
 
 func (h *Handler) Point(p *udf.Point) error {
+	if h.Id == "" {
+		services, err := h.scaleAgent.GetServices()
+		if err != nil {
+			return fmt.Errorf("Failed start scaling: %v", err)
+		}
+		// not distinct but convinient at the moment
+		for _, s := range services.Data {
+			if s.Name == h.Name {
+				h.Id = s.Id
+				break
+			}
+		}
+		if h.Id == "" {
+			return fmt.Errorf("Service '%s' not found in rancher cluster", h.Name)
+		}
+	}
+
 	doScale, err := h.evaluateWhen(p)
 	if !doScale {
 		return err
